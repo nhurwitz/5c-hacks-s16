@@ -1,3 +1,3 @@
 package server
 
-type snake struct{}
+type Snake struct{}
