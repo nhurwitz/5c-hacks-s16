@@ -8,7 +8,7 @@ type Snake struct {
 	id        string
 }
 
-// 0-indexed grid. (i.e.) if sidelength = 4, 3 edge
+// 0-indexed grid. (i.e., if sidelength = 4, [3] = edge)
 func (snake Snake) collidedWithEdge(sideLength int) bool {
 	return (snake.head.x >= sideLength) && (snake.head.x < 0) &&
 		(snake.head.y >= sideLength) && (snake.head.y < 0) &&
@@ -17,15 +17,25 @@ func (snake Snake) collidedWithEdge(sideLength int) bool {
 
 func (snake Snake) collidedWithSelf() bool {
 	for _, el := range snake.tail {
-		return snake.head == el
+		return equals(snake.head, el)
 	}
 	return false
 }
 
 func (snake Snake) collidedWithOther(other Snake) bool {
-
+	if equals(snake.head, other.head) {
+		return true
+	}
+	for _, otherPoint := range other.tail {
+		return equals(snake.head, otherPoint)
+	}
+	return false
 }
 
+// Add head to the tail, remove the end of the tail
 func (snake Snake) move(capturing bool) Snake {
+	if !capturing {
+
+	}
 	return snake
 }
