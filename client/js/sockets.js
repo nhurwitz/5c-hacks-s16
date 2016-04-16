@@ -21,19 +21,21 @@ exampleSocket.onmessage = function(event) {
             return;
         case 'Welcome':
             myID = serverEvent.snakeID;
+            CELL_WIDTH = GRID_WIDTH / serverEvent.world["sideLength"];
+            initGrid();
             return;
     }
 }
 
 document.addEventListener('keydown', function(e) {
-        e.preventDefault();
-        if (e.keyCode in keys) {
-            var msg = {
-                actionType: "Direction",
-                snakeID: myID,
-                direction: keys[e.keyCode]
-            };
-            exampleSocket.send(JSON.stringify(msg));
+    e.preventDefault();
+    if (e.keyCode in keys) {
+        var msg = {
+            actionType: "Direction",
+            snakeID: myID,
+            direction: keys[e.keyCode]
+        };
+        exampleSocket.send(JSON.stringify(msg));
 
-        }
+    }
 }, false);
