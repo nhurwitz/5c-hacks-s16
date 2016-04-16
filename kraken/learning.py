@@ -19,7 +19,7 @@ def intToDirection(d):
         1: 'East',
         2: 'South',
         3: 'West',
-        4: 'Up',
+        4: 'Up',    
         5: 'Down',
     }[d]
 
@@ -101,8 +101,6 @@ def train_net(model, params):
             qval = model.predict(state, batch_size=1)
             action = (np.argmax(qval))  # best
 
-        print(clientId)
-        print intToDirection(action)
         ws.send(json.dumps({"actionType": "Direction", "snakeID": clientId, "direction": intToDirection(action)}))
         new_state = ws.recv()
         # Take action, observe new state and get our treat.
