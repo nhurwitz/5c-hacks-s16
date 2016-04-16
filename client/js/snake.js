@@ -6,19 +6,18 @@ var keys = {
     87: 'up', // W key
     83: 'down' // S key
 };
-var GRID_WIDTH = 450;
+var GRID_WIDTH = 500;
 var CAMERA_Y = 300;
 var CAMERA_Z = 2000;
 var ANIMATION_TIME = 200;
 var GRID_COLOR = "#444036";
-var BACKGROUND_COLOR = "#DFEBED";
 var LIGHT_COLOR = "white";
 var MY_TAIL_COLOR = '#3498DB';
 var MY_HEAD_COLOR = '#FF9A00';
 var OTHER_TAIL_COLOR = '#95A5A6';
 var OTHER_HEAD_COLOR = '#ABB7B7';
 var FOOD_COLOR = 'red'
-var MARGIN_TOP = 125;
+var MARGIN_TOP = 185;
 var CELL_WIDTH;
 
 var cubeGeo, sphereGeo, squareGeo, boundingGrid, myID;
@@ -31,9 +30,11 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(25, width / height, 1, 30000);
 
 var renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias: true,
+    alpha: true
+
 });
-renderer.setClearColor(BACKGROUND_COLOR,1);
+renderer.setClearColor(0x000000, 0);
 renderer.setSize(width, height);
 container.appendChild(renderer.domElement);
 
