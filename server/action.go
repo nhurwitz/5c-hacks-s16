@@ -10,6 +10,7 @@ const (
 )
 
 type Action struct {
-	actionType ActionEnum
-	snakeId    string
+	ActionType ActionEnum `json:"actionType"`
+	SnakeID    string     `json:"snakeID"`
+	Direction  *Direction `json:"direction,omitempty"`
 }

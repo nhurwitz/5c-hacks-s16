@@ -2,9 +2,9 @@ package server
 
 // Point = X Y Z coord
 type Point struct {
-	x int
-	y int
-	z int
+	X int
+	Y int
+	Z int
 }
 
 // Direction = The way the snake is heading
@@ -23,22 +23,22 @@ const (
 func move(p Point, d Direction) Point {
 	switch d {
 	case NORTH:
-		return Point{p.x, p.y + 1, p.z}
+		return Point{p.X, p.Y + 1, p.Z}
 	case EAST:
-		return Point{p.x + 1, p.y, p.z}
+		return Point{p.X + 1, p.Y, p.Z}
 	case SOUTH:
-		return Point{p.x, p.y - 1, p.z}
+		return Point{p.X, p.Y - 1, p.Z}
 	case WEST:
-		return Point{p.x - 1, p.y, p.z}
+		return Point{p.X - 1, p.Y, p.Z}
 	case UP:
-		return Point{p.x, p.y, p.z + 1}
+		return Point{p.X, p.Y, p.Z + 1}
 	case DOWN:
-		return Point{p.x, p.y, p.z - 1}
+		return Point{p.X, p.Y, p.Z - 1}
 	}
 	panic("Invalid direction")
 }
 
 func (p Point) equals(other Point) bool {
-	return (p.x == other.x) && (p.y == other.y) &&
-		(p.z == other.z)
+	return (p.X == other.X) && (p.Y == other.Y) &&
+		(p.Z == other.Z)
 }
