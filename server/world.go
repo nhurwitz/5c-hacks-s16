@@ -155,6 +155,10 @@ func Act(w World, a Action) (World, []Event) {
 			return w, nil
 		}
 
+		if _, ok := w.Snakes[a.SnakeID]; !ok {
+			return w, nil
+		}
+
 		var temp Snake
 		temp = w.Snakes[a.SnakeID]
 		temp.Direction = *a.Direction
