@@ -4,9 +4,9 @@ type ActionEnum string
 
 // Possible Actions
 const (
-	ACTION_SPAWN     ActionEnum = "Spawn"     // snake spawns
-	ACTION_DIRECTION ActionEnum = "Direction" // snake changes direction
-	ACTION_QUIT      ActionEnum = "Quit"      // snake quits
+	ActionSpawn     ActionEnum = "Spawn"     // snake spawns
+	ActionDirection ActionEnum = "Direction" // snake changes direction
+	ActionQuit      ActionEnum = "Quit"      // snake quits
 )
 
 type Action struct {

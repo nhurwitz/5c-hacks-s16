@@ -2,7 +2,7 @@ package server
 
 import "math/rand"
 
-const POINT_RATIO = 1
+const PointRatio = 1
 
 type World struct {
 	GridLength    int     `json:"gridLength"`
@@ -25,7 +25,7 @@ func (w World) randomPoint() Point {
 }
 
 func (w World) requeuePoints() World {
-	for len(w.PendingPoints) < len(w.Snakes)*POINT_RATIO {
+	for len(w.PendingPoints) < len(w.Snakes)*PointRatio {
 		newPoint := w.randomPoint()
 		// TODO XXX don't generate points currently in snakes?
 		for w.isPending(newPoint) {
@@ -103,8 +103,8 @@ func Tick(w World) (World, []Event) {
 	var events []Event
 	for snakeID := range deadSnakeIDs {
 		events = append(events, Event{
-			eventType: EVENT_DIE,
-			snakeId:   snakeID,
+			EventType: EVENT_DIE,
+			SnakeID:   &snakeID,
 		})
 	}
 
