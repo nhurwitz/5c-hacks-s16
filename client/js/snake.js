@@ -1,10 +1,10 @@
 var keys = {
-    38: 'up', // up key
-    40: 'down', // down key
-    39: 'right', // -> key
-    37: 'left', // <- key
-    87: 'in', // W key
-    83: 'out' // S key
+    38: 'north', // up key
+    40: 'south', // down key
+    39: 'east', // -> key
+    37: 'west', // <- key
+    87: 'up', // W key
+    83: 'down' // S key
 };
 var GRID_WIDTH = 450;
 var CAMERA_Y = 300;
@@ -45,10 +45,8 @@ camera.position.set(GRID_WIDTH / 2, CAMERA_Y, CAMERA_Z);
 camera.lookAt(new THREE.Vector3());
 plane = 'xy';
 
-myID = 'abc123thisIsAnID';
-
 document.addEventListener('keydown', function(e) {
-    if (keys[e.keyCode] == 'in' || keys[e.keyCode] == 'out') {
+    if (keys[e.keyCode] == 'up' || keys[e.keyCode] == 'down') {
         if (plane == 'xy') camYZ();
         else camXY();
     }
@@ -56,13 +54,8 @@ document.addEventListener('keydown', function(e) {
 
 animate();
 
-//processResponse(response);
-
 function processResponse(response) {
-    for (var i = scene.children.length - 1; i >= 0; i--) {
-      obj = scene.children[i];
-      scene.remove(obj);
-    }
+    scene.remove(boundingGrid);
 
     CELL_WIDTH = GRID_WIDTH / response["sideLength"];
 
@@ -133,6 +126,7 @@ function camYZ() {
 function onCamUpdate() {
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 }
+
 
 function addFood(food, color) {
     var sphereMaterial = new THREE.MeshLambertMaterial({
