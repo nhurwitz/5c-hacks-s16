@@ -4,36 +4,33 @@ font-family: 'courier';
 color: #fff;
 font-size: 24px;
 letter-spacing: 5px;
-}
 
- img {
-width: 70px;
-height: 70px;
-}
 
+
+background: #FF4E50; /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #FF4E50 , #F9D423); /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #FF4E50 , #F9D423); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        
+}
 
 #container {
-height: 70vh;
-width: 60vw;
+height: 100vh;
+width: 100vw;
 float: none;
 margin: 0 auto;
 }
 
 .jumbotron {
-  background: #DE6262; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to left, #DE6262 , #FFB88C); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, #DE6262 , #FFB88C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */s
+  padding: 0;
 }
 
-.centered {
-  text-align: center;
-}
 .jumbotron.vertical-center {
+  background-color: transparent;
   margin-bottom: 0;
 }
 .vertical-center {
-  min-height: 80%;
-  min-height: 80vh;
+  min-height: 100%;
+  min-height: 100vh;
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
