@@ -1,5 +1,8 @@
 package server
 
+// "github.com/satori/go.uuid"
+// "math/rand"
+
 const PointRatio = 1
 
 type World struct {
@@ -12,7 +15,8 @@ func newWorld(gridLength int) World {
 	return World{
 		SideLength:    gridLength,
 		PendingPoints: make([]Point, 0),
-		Snakes:        make(map[string]Snake)}
+		Snakes:        make(map[string]Snake),
+	}
 }
 
 func (w World) randomPoint() Point {
@@ -121,5 +125,61 @@ func Tick(w World) (World, []Event) {
 
 	// Update world. Return the world + events
 	w.Snakes = livingMovedSnakes
+
 	return w, events
+}
+
+// Act on user action
+func Act(w World, a Action) (World, []Event) {
+
+	switch a.ActionType {
+
+	case ActionChangeDirection:
+		var temp Snake
+		temp = w.Snakes[a.SnakeID]
+		temp.Direction = *a.Direction
+		w.Snakes[a.SnakeID] = temp
+		return w, nil
+
+	case ActionSpawn:
+		newSnake := NewSnake(w.SideLength)
+		newSnake.ID = a.SnakeID // we need it to be the same player
+
+		// Makes sure new head contained within another snake / a pending point
+	validationLoop:
+		for {
+			for _, snake := range w.Snakes {
+				for i := range w.PendingPoints {
+					if !(snake.containsPoint(newSnake.Head) ||
+						w.PendingPoints[i].equals(newSnake.Head)) {
+						break validationLoop
+					}
+					newSnake.Head = randomPointIn(w.SideLength)
+					continue validationLoop
+				}
+			}
+		}
+
+		newSnake.Direction = *a.Direction
+		w.Snakes[newSnake.ID] = newSnake
+		eventArr := []Event{Event{
+			EventType: EventSpawn,
+			SnakeID:   &newSnake.ID,
+		}}
+
+		return w, eventArr
+
+	case ActionQuit:
+		delete(w.Snakes, a.SnakeID)
+		w.PendingPoints = w.PendingPoints[1:]
+		return w, []Event{{
+			EventType: EventLeave,
+			SnakeID:   &a.SnakeID,
+		}}
+
+	default:
+		panic("invalid action enum")
+	}
+
+	return w, nil
 }
