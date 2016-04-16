@@ -26,13 +26,14 @@ exampleSocket.onmessage = function(event) {
 }
 
 document.addEventListener('keydown', function(e) {
-  e.preventDefault();
-    if (e.keyCode in keys) {
-        var msg = {
-            actionType: "Direction",
-            snakeID: myID,
-            direction: keys[e.keyCode]
-        };
-        exampleSocket.send(JSON.stringify(msg));
-    }
+        e.preventDefault();
+        if (e.keyCode in keys) {
+            var msg = {
+                actionType: "Direction",
+                snakeID: myID,
+                direction: keys[e.keyCode]
+            };
+            exampleSocket.send(JSON.stringify(msg));
+
+        }
 }, false);

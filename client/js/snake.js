@@ -3,9 +3,18 @@ var keys = {
     40: 'South', // down key
     39: 'East', // -> key
     37: 'West', // <- key
-    87: 'Up', // W key
-    83: 'Down' // S key
+    87: 'Down', // W key
+    83: 'Up', // S key
 };
+var CAMERA_KEY_CODE = 32;
+// var yzKeys = {
+//     38: 'North', // up key
+//     40: 'South', // down key
+//     39: 'Down', // -> key
+//     37: 'Up', // <- key
+//     87: 'West', // W key
+//     83: 'East' // S key
+// };
 var GRID_WIDTH = 450;
 var CAMERA_Y = 300;
 var CAMERA_Z = 2000;
@@ -21,7 +30,7 @@ var FOOD_COLOR = 'red'
 var MARGIN_TOP = 125;
 var CELL_WIDTH;
 
-var cubeGeo, sphereGeo, squareGeo, boundingGrid, myID;
+var cubeGeo, sphereGeo, squareGeo, circleGeo, boundingGrid, myID;
 
 var container = document.getElementById('container');
 var width = container.clientWidth;
@@ -46,7 +55,7 @@ camera.lookAt(new THREE.Vector3());
 plane = 'xy';
 
 document.addEventListener('keydown', function(e) {
-    if (keys[e.keyCode] == 'Up' || keys[e.keyCode] == 'Down') {
+    if (e.keyCode == CAMERA_KEY_CODE) {
         if (plane == 'xy') camYZ();
         else camXY();
     }
