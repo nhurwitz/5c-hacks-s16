@@ -8,6 +8,10 @@ type Snake struct {
 	id        string
 }
 
+func (snake Snake) tickedHead() Point {
+	return snake.move(false).head
+}
+
 // 0-indexed grid. (i.e., if sidelength = 4, [3] = edge)
 func (snake Snake) collidedWithEdge(sideLength int) bool {
 	return (snake.head.x >= sideLength) || (snake.head.x < 0) ||
