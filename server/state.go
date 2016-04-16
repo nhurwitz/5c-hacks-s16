@@ -1,11 +1,19 @@
 package server
 
-import "time"
+import (
+	"sync"
+	"time"
+
+	"github.com/gorilla/websocket"
+)
 
 var (
-	w          = newWorld(20)
+	world      = newWorld(20)
 	eventChan  = make(chan Event)
 	actionChan = make(chan Action)
+
+	connections map[*websocket.Conn]bool
+	mu          = new(sync.Mutex)
 )
 
 func init() {
@@ -16,13 +24,20 @@ func init() {
 			var evts []Event
 			select {
 			case <-timer: // world changes
-				w, evts = Tick(w)
+				world, evts = Tick(world)
 				eventChan <- Event{
 					EventType: EventWorld,
-					World:     w,
+					World:     world,
 				}
 			case a := <-actionChan: // update the world in response to an action
-				w, evts = Act(w, a)
+				world, evts = Act(world, a)
+			case e := <-eventChan:
+				mu.Lock()
+				for conn := range connections {
+					// ignore the error because it's 1:17 and we on this thang
+					conn.WriteJSON(e)
+				}
+				mu.Unlock()
 			}
 
 			for _, evt := range evts {

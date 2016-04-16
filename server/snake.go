@@ -1,7 +1,5 @@
 package server
 
-import "github.com/satori/go.uuid"
-
 // Snake = ~~~:)
 type Snake struct {
 	Head      Point     `json:"head"`
@@ -12,7 +10,7 @@ type Snake struct {
 
 func NewSnake(sideLength int) Snake {
 	return Snake{
-		ID:        uuid.NewV4().String(),
+		// ID:        uuid.NewV4().String(),
 		Head:      randomPointIn(sideLength),
 		Tail:      make([]Point, 0),
 		Direction: randomDirection(),
