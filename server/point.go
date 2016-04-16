@@ -22,6 +22,24 @@ const (
 	Down  Direction = "Down"
 )
 
+func opposite(d Direction) Direction {
+	switch d {
+	case North:
+		return South
+	case East:
+		return West
+	case South:
+		return North
+	case West:
+		return East
+	case Up:
+		return Down
+	case Down:
+		return Up
+	}
+	panic("Invalid direction")
+}
+
 func move(p Point, d Direction) Point {
 	switch d {
 	case North:
