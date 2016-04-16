@@ -33,8 +33,10 @@ func (w World) requeuePoints() World {
 
 	for len(w.PendingPoints) < len(w.Snakes)*PointRatio {
 		newPoint := w.randomPoint()
-		for w.isPending(newPoint) || w.anySnakesContain(newPoint) {
+		pending, _ := w.isPending(newPoint)
+		for pending || w.anySnakesContain(newPoint) {
 			newPoint = w.randomPoint()
+			pending, _ = w.isPending(newPoint)
 		}
 		w.PendingPoints = append(w.PendingPoints, newPoint)
 	}
@@ -42,13 +44,13 @@ func (w World) requeuePoints() World {
 	return w
 }
 
-func (w World) isPending(p Point) bool {
-	for _, point := range w.PendingPoints {
+func (w World) isPending(p Point) (bool, int) {
+	for i, point := range w.PendingPoints {
 		if p.equals(point) {
-			return true
+			return true, i
 		}
 	}
-	return false
+	return false, -1
 }
 
 func Tick(w World) (World, []Event) {
@@ -64,8 +66,9 @@ func Tick(w World) (World, []Event) {
 	// XXX TODO remove pending points
 	snakesWhichAreCapturing := make(map[string]bool)
 	for snakeID, newHead := range tickedHeads {
-		if w.isPending(newHead) {
+		if pending, i := w.isPending(newHead); pending {
 			snakesWhichAreCapturing[snakeID] = true
+			w.PendingPoints = append(w.PendingPoints[:i], w.PendingPoints[i+1:]...)
 		}
 	}
 
