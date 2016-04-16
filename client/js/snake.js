@@ -1,20 +1,13 @@
 var keys = {
-    38: 'North', // up key
-    40: 'South', // down key
+    38: 'Down', // up key
+    40: 'Up', // down key
     39: 'East', // -> key
     37: 'West', // <- key
-    87: 'Down', // W key
-    83: 'Up', // S key
+    87: 'North', // W key
+    83: 'South', // S key
 };
 var CAMERA_KEY_CODE = 32;
-// var yzKeys = {
-//     38: 'North', // up key
-//     40: 'South', // down key
-//     39: 'Down', // -> key
-//     37: 'Up', // <- key
-//     87: 'West', // W key
-//     83: 'East' // S key
-// };
+
 var GRID_WIDTH = 450;
 var CAMERA_Y = 300;
 var CAMERA_Z = 2000;
