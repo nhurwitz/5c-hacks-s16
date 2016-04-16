@@ -1,4 +1,4 @@
-var exampleSocket = new WebSocket("ws://localhost:8000/ws");
+var exampleSocket = new WebSocket("ws://" + window.location.hostname + ":8000/ws");
 
 exampleSocket.onopen = function(event) {
     console.log('here');
