@@ -5,16 +5,16 @@ import "math/rand"
 const PointRatio = 1
 
 type World struct {
-	GridLength    int     `json:"gridLength"`
-	PendingPoints []Point `json:"pendingPoints"`
-	Snakes        []Snake `json:"snakes"`
+	GridLength    int              `json:"gridLength"`
+	PendingPoints []Point          `json:"pendingPoints"`
+	Snakes        map[string]Snake `json:"snakes"`
 }
 
 func newWorld(gridLength int) World {
 	return World{
 		GridLength:    gridLength,
 		PendingPoints: make([]Point, 0),
-		Snakes:        make([]Snake, 0)}
+		Snakes:        make(map[string]Snake)}
 }
 
 func (w World) randomPoint() Point {
@@ -103,7 +103,7 @@ func Tick(w World) (World, []Event) {
 	var events []Event
 	for snakeID := range deadSnakeIDs {
 		events = append(events, Event{
-			EventType: EVENT_DIE,
+			EventType: EventDie,
 			SnakeID:   &snakeID,
 		})
 	}
@@ -112,11 +112,6 @@ func Tick(w World) (World, []Event) {
 	w = w.requeuePoints()
 
 	// Update world. Return the world + events
-	var newSnakes []Snake
-	for _, snake := range livingMovedSnakes {
-		newSnakes = append(newSnakes, snake)
-	}
-	w.Snakes = newSnakes
-
+	w.Snakes = livingMovedSnakes
 	return w, events
 }
