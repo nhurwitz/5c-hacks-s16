@@ -37,8 +37,8 @@ func (w World) requeuePoints() {
 func (w World) pointContains(p Point) bool {
 	for _, point := range w.availablePoints {
 		if p.equals(point) {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
