@@ -36,3 +36,8 @@ func move(p Point, d Direction) {
 		p.z--
 	}
 }
+
+func (p Point) equals(other Point) bool {
+	return (p.x == other.x) && (p.y == other.y) &&
+		(p.z == other.z)
+}

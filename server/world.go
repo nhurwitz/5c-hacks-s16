@@ -20,6 +20,18 @@ func (w World) randomPoint() Point {
 func (w World) requeuePoints() {
 	for len(w.availablePoints) < len(w.snakes)*POINT_RATIO {
 		newPoint := w.randomPoint()
+		for w.pointContains(newPoint) {
+			newPoint = w.randomPoint()
+		}
 		w.availablePoints = append(w.availablePoints, newPoint)
 	}
+}
+
+func (w World) pointContains(p Point) bool {
+	for _, point := range w.availablePoints {
+		if p.equals(point) {
+			return false
+		}
+	}
+	return true
 }
