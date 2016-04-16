@@ -165,7 +165,7 @@ func Act(w World, a Action) (World, []Event) {
 		eventArr := []Event{Event{
 			EventType: EventSpawn,
 			SnakeID:   &newSnake.ID,
-			World:     &w,
+			World:     w,
 		}}
 
 		return w, eventArr

@@ -13,5 +13,5 @@ const (
 type Event struct {
 	EventType EventEnum `json:"eventType"`
 	SnakeID   *string   `json:"snakeID,omitempty"`
-	World     *World    `json:"world,omitempty"`
+	World     World     `json:"world"`
 }
