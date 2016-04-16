@@ -10,9 +10,9 @@ type Snake struct {
 
 // 0-indexed grid. (i.e., if sidelength = 4, [3] = edge)
 func (snake Snake) collidedWithEdge(sideLength int) bool {
-	return (snake.head.x >= sideLength) && (snake.head.x < 0) &&
-		(snake.head.y >= sideLength) && (snake.head.y < 0) &&
-		(snake.head.z >= sideLength) && (snake.head.z < 0)
+	return (snake.head.x >= sideLength) || (snake.head.x < 0) ||
+		(snake.head.y >= sideLength) || (snake.head.y < 0) ||
+		(snake.head.z >= sideLength) || (snake.head.z < 0)
 }
 
 func (snake Snake) collidedWithSelf() bool {
@@ -32,10 +32,14 @@ func (snake Snake) collidedWithOther(other Snake) bool {
 	return false
 }
 
-// Add head to the tail, remove the end of the tail
+// Advance snake by adding head to the tail
+// Remove last element if not capturing
 func (snake Snake) move(capturing bool) Snake {
+	var newHead = move(snake.head, snake.direction)
+	snake.tail = append([]Point{snake.head}, snake.tail...)
+	snake.head = newHead
 	if !capturing {
-
+		snake.tail = snake.tail[:len(snake.tail)-1]
 	}
 	return snake
 }

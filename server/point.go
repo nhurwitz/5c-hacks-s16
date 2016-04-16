@@ -10,7 +10,7 @@ type Point struct {
 // Direction = The way the snake is heading
 type Direction string
 
-// 6 Directions
+// 6 Directions (6 god s/o Drake)
 const (
 	NORTH Direction = "North"
 	EAST  Direction = "East"
@@ -20,21 +20,22 @@ const (
 	DOWN  Direction = "Down"
 )
 
-func move(p Point, d Direction) {
+func move(p Point, d Direction) Point {
 	switch d {
 	case NORTH:
-		p.y++
+		return Point{p.x, p.y + 1, p.z}
 	case EAST:
-		p.x++
+		return Point{p.x + 1, p.y, p.z}
 	case SOUTH:
-		p.y--
+		return Point{p.x, p.y - 1, p.z}
 	case WEST:
-		p.x--
+		return Point{p.x - 1, p.y, p.z}
 	case UP:
-		p.z++
+		return Point{p.x, p.y, p.z + 1}
 	case DOWN:
-		p.z--
+		return Point{p.x, p.y, p.z - 1}
 	}
+	panic("Invalid direction")
 }
 
 func (p Point) equals(other Point) bool {
