@@ -1,9 +1,7 @@
 package server
 
-import (
 // "github.com/satori/go.uuid"
 // "math/rand"
-)
 
 const PointRatio = 1
 
@@ -145,6 +143,7 @@ func Act(w World, a Action) (World, []Event) {
 	// New snake spawned
 	case ActionSpawn:
 		newSnake := NewSnake(w.SideLength)
+		newSnake.ID = a.SnakeID // we need it to be the same player
 
 		// Makes sure new head contained within another snake / a pending point
 	validationLoop:
