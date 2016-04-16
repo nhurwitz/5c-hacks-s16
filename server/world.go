@@ -1,5 +1,10 @@
 package server
 
+import (
+// "github.com/satori/go.uuid"
+// "math/rand"
+)
+
 const PointRatio = 1
 
 type World struct {
@@ -121,5 +126,51 @@ func Tick(w World) (World, []Event) {
 
 	// Update world. Return the world + events
 	w.Snakes = livingMovedSnakes
+
 	return w, events
+}
+
+// Act on user action
+func Act(w World, a Action) (World, []Event) {
+
+	switch a.ActionType {
+
+	case ActionChangeDirection:
+		var temp Snake
+		temp = w.Snakes[a.SnakeID]
+		temp.Direction = *a.Direction
+		w.Snakes[a.SnakeID] = temp
+		return w, nil
+
+	// New snake spawned
+	case ActionSpawn:
+		newSnake := NewSnake(w.SideLength)
+
+		// Makes sure new head contained within another snake / a pending point
+	validationLoop:
+		for {
+			for _, snake := range w.Snakes {
+				for i := range w.PendingPoints {
+					if !(snake.containsPoint(newSnake.Head) ||
+						w.PendingPoints[i].equals(newSnake.Head)) {
+						break validationLoop
+					}
+					newSnake.Head = randomPointIn(w.SideLength)
+					continue validationLoop
+				}
+			}
+		}
+
+		newSnake.Direction = *a.Direction
+		w.Snakes[newSnake.ID] = newSnake
+		eventArr := []Event{Event{
+			EventType: EventSpawn,
+			SnakeID:   &newSnake.ID,
+			World:     &w,
+		}}
+
+		return w, eventArr
+	}
+
+	return w, nil
 }
