@@ -1,9 +1,11 @@
 import numpy as np
+from threading import *
 import random
 import csv
 from nn import neural_net, LossHistory
 import os.path
 import timeit
+from time import sleep
 import json
 from websocket import create_connection
 from enum import Enum
@@ -13,6 +15,22 @@ NUM_INPUT = 3
 GAMMA = 0.9  # Forgetting.
 TUNING = False  # If False, just use arbitrary, pre-selected params.
 
+def world_json_to_array(d, my_snake_id):
+    state = [[[0 for k in range(0,d['sideLength'])] for j in range(0,d['sideLength'])] for i in range(0,d['sideLength'])]
+    for key in d['snakes']:
+        for pending_point in d['pendingPoints']:
+                state[pending_point['x']][pending_point['y']][pending_point['z']] = 3
+        id =  d['snakes'][key]['id']
+        head = d['snakes'][key]['head']
+        if id == my_snake_id:
+            state[head['x']][head['y']][head['z']] = 1
+            for tail_point in d['snakes'][key]['tail']:
+                state[tail_point['x']][tail_point['y']][tail_point['z']] = 1
+        else:
+            state[head['x']][head['y']][head['z']] = 2
+            for tail_point in d['snakes'][key]['tail']:
+                 state[tail_point['x']][tail_point['y']][tail_point['z']] = 2
+    return np.asarray([state[i][j][k] for i in range(0,d['sideLength']) for j in range(0,d['sideLength']) for k in range(0,d['sideLength']) ])
 
 def intToDirection(d):
     return {
@@ -67,7 +85,12 @@ def play_net(model, params):
 
     while True:
       state = ws.recv()
-      qval = model.predict(state, batch_size=1)
+      parsed = json.loads(state)
+
+      if parsed['eventType'] != 'World':
+        continue
+
+      qval = model.predict(world_json_to_array(parsed['world'], clientId), batch_size=1)
       action = (np.argmax(qval))  # best
       ws.send(json.dumps({"actionType": "Direction", "snakeID": clientId, "direction": intToDirection(action)}))
 
@@ -101,7 +124,8 @@ def train_net(model, params):
     start_time = timeit.default_timer()
 
     # Run the frames.
-    while t < train_frames:
+    # while t < train_frames:
+    while True:
 
         t += 1
         car_distance += 1
@@ -120,7 +144,9 @@ def train_net(model, params):
         reward = objective_function(json.loads(new_state), json.loads(game_state), clientId)
 
         # Experience replay storage.
-        replay.append((game_state, action, reward, new_state))
+        parsed = json.loads(game_state)
+        if parsed['eventType'] == 'World':
+          replay.append((json.loads(game_state)['world'], action, reward, new_state))
 
         # If we're done observing, start training.
         if t > observe:
@@ -133,7 +159,7 @@ def train_net(model, params):
             minibatch = random.sample(replay, batchSize)
 
             # Get training values.
-            X_train, y_train = process_minibatch(minibatch, model)
+            X_train, y_train = process_minibatch(minibatch, model, clientId)
 
             # Train the model on this batch.
             history = LossHistory()
@@ -194,7 +220,7 @@ def log_results(filename, data_collect, loss_log):
             wr.writerow(loss_item)
 
 
-def process_minibatch(minibatch, model):
+def process_minibatch(minibatch, model, my_id):
     """This does the heavy lifting, aka, the training. It's super jacked."""
     X_train = []
     y_train = []
@@ -204,7 +230,8 @@ def process_minibatch(minibatch, model):
         # Get stored values.
         old_state_m, action_m, reward_m, new_state_m = memory
         # Get prediction on old state.
-        old_qval = model.predict(old_state_m, batch_size=1)
+        print(old_state_m)
+        old_qval = model.predict(world_json_to_array(old_state_m, my_id), batch_size=1)
         # Get prediction on new state.
         newQ = model.predict(new_state_m, batch_size=1)
         # Get our best move. I think?
@@ -247,6 +274,9 @@ def launch_learn(params):
     else:
         print("Already tested.")
 
+def train_net_forever(model, params):
+  while True:
+    train_net(model, params)
 
 if __name__ == "__main__":
     if TUNING:
@@ -279,9 +309,17 @@ if __name__ == "__main__":
         model = neural_net(NUM_INPUT, nn_param)
 
         # Concurrently train and play the model
-        with ThreadPoolExecutor(max_workers=5) as executor:
-          executor.submit(train_net, model, params)
-          executor.submit(train_net, model, params)
-          executor.submit(train_net, model, params)
-          executor.submit(train_net, model, params)
-          executor.submit(play_net, model, params)
+        t1 = Thread(target=train_net_forever, args=(model, params))
+        t2 = Thread(target=train_net_forever, args=(model, params))
+        t3 = Thread(target=train_net_forever, args=(model, params))
+        t4 = Thread(target=train_net_forever, args=(model, params))
+        t5 = Thread(target=play_net, args=(model, params))
+
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
+        t5.start()
+
+        while True:
+          sleep(10)
