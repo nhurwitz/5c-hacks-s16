@@ -1,10 +1,10 @@
 var keys = {
-    38: 'north', // up key
-    40: 'south', // down key
-    39: 'east', // -> key
-    37: 'west', // <- key
-    87: 'up', // W key
-    83: 'down' // S key
+    38: 'North', // up key
+    40: 'South', // down key
+    39: 'East', // -> key
+    37: 'West', // <- key
+    87: 'Up', // W key
+    83: 'Down' // S key
 };
 var GRID_WIDTH = 450;
 var CAMERA_Y = 300;
@@ -46,7 +46,7 @@ camera.lookAt(new THREE.Vector3());
 plane = 'xy';
 
 document.addEventListener('keydown', function(e) {
-    if (keys[e.keyCode] == 'up' || keys[e.keyCode] == 'down') {
+    if (keys[e.keyCode] == 'Up' || keys[e.keyCode] == 'Down') {
         if (plane == 'xy') camYZ();
         else camXY();
     }
