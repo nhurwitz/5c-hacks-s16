@@ -1,17 +1,68 @@
-from flat_game import carmunk
 import numpy as np
 import random
 import csv
 from nn import neural_net, LossHistory
 import os.path
 import timeit
+import json
+from websocket import create_connection
+from enum import Enum
 
 NUM_INPUT = 3
 GAMMA = 0.9  # Forgetting.
 TUNING = False  # If False, just use arbitrary, pre-selected params.
 
 
+def intToDirection(d):
+    return {
+        0: 'North',
+        1: 'East',
+        2: 'South',
+        3: 'West',
+        4: 'Up',
+        5: 'Down',
+    }[d]
+
+def manhattan_distance(p1, p2):
+    p1x = p1['x']
+    p1y = p1['y']
+    p1z = p1['z']
+    p2x = p2['x']
+    p2y = p2['y']
+    p2z = p2['z']
+    return abs(p1x - p2x) + abs(p1y-p2y) + abs(p1z-p2z)
+
+def objective_function(new_state, old_state, snake_id):
+    new_state = new_state['world']
+    old_state = old_state['world']
+    reward = 0;
+    isAlive = False
+    try:
+        for key in new_state['snakes']:
+            if new_state['snakes'][key]['id'] == snake_id:
+                isAlive = True
+        if not isAlive:
+            return -500
+    except:
+        return -500
+   
+    try:
+        if len(new_state['snakes'][snake_id]['tail']) > len(old_state['snakes'][snake_id]['tail']):
+            reward += 10
+    except:
+        pass
+
+    head = new_state['snakes'][snake_id]['head']                                                         
+    minDistance = 500
+    for pendingPoint in new_state['pendingPoints']:
+        minDistance = min(minDistance, manhattan_distance(head,pendingPoint))
+    return reward - minDistance
+
 def train_net(model, params):
+    ws = create_connection("ws://localhost:8000/ws")
+    welcomeJson = ws.recv()
+    welcome = json.loads(welcomeJson)
+    clientId = welcome['snakeID']
 
     filename = params_to_filename(params)
 
@@ -31,10 +82,7 @@ def train_net(model, params):
     loss_log = []
 
     # Create a new game instance.
-    game_state = carmunk.GameState()
-
-    # Get initial state by doing nothing and getting the state.
-    _, state = game_state.frame_step((2))
+    game_state = ws.recv()
 
     # Let's time it.
     start_time = timeit.default_timer()
@@ -47,17 +95,21 @@ def train_net(model, params):
 
         # Choose an action.
         if random.random() < epsilon or t < observe:
-            action = np.random.randint(0, 3)  # random
+            action = np.random.randint(0, 6)  # random
         else:
             # Get Q values for each action.
             qval = model.predict(state, batch_size=1)
             action = (np.argmax(qval))  # best
 
+        print(clientId)
+        print intToDirection(action)
+        ws.send(json.dumps({"actionType": "Direction", "snakeID": clientId, "direction": intToDirection(action)}))
+        new_state = ws.recv()
         # Take action, observe new state and get our treat.
-        reward, new_state = game_state.frame_step(action)
+        reward = objective_function(json.loads(new_state), json.loads(game_state), clientId)
 
         # Experience replay storage.
-        replay.append((state, action, reward, new_state))
+        replay.append((game_state, action, reward, new_state))
 
         # If we're done observing, start training.
         if t > observe:
@@ -81,7 +133,7 @@ def train_net(model, params):
             loss_log.append(history.losses)
 
         # Update the starting state with S'.
-        state = new_state
+        game_state = new_state
 
         # Decrement epsilon over time.
         if epsilon > 0.1 and t > observe:

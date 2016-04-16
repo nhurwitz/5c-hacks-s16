@@ -14,12 +14,12 @@ type Direction string
 
 // 6 Directions (6 god s/o Drake)
 const (
-	North Direction = "North"
-	East  Direction = "East"
-	South Direction = "South"
-	West  Direction = "West"
-	Up    Direction = "Up"
-	Down  Direction = "Down"
+	North Direction = "North" // 1
+	East  Direction = "East"  // 2
+	South Direction = "South" // 3
+	West  Direction = "West"  // 4
+	Up    Direction = "Up"    // 5
+	Down  Direction = "Down"  // 6
 )
 
 func move(p Point, d Direction) Point {
