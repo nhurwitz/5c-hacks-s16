@@ -1,27 +1,22 @@
 package server
 
-import "math/rand"
-
 const PointRatio = 1
 
 type World struct {
-	GridLength    int              `json:"gridLength"`
+	SideLength    int              `json:"sideLength"`
 	PendingPoints []Point          `json:"pendingPoints"`
 	Snakes        map[string]Snake `json:"snakes"`
 }
 
 func newWorld(gridLength int) World {
 	return World{
-		GridLength:    gridLength,
+		SideLength:    gridLength,
 		PendingPoints: make([]Point, 0),
 		Snakes:        make(map[string]Snake)}
 }
 
 func (w World) randomPoint() Point {
-	return Point{
-		X: rand.Intn(w.GridLength),
-		Y: rand.Intn(w.GridLength),
-		Z: rand.Intn(w.GridLength)}
+	return randomPointIn(w.SideLength)
 }
 
 func (w World) anySnakesContain(p Point) bool {
@@ -102,7 +97,7 @@ func Tick(w World) (World, []Event) {
 		}
 
 		// colliding with edge.
-		if snake.collidedWithEdge(w.GridLength) {
+		if snake.collidedWithEdge(w.SideLength) {
 			deadSnakeIDs[snakeID] = true
 		}
 	}

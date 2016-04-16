@@ -1,11 +1,22 @@
 package server
 
+import "github.com/satori/go.uuid"
+
 // Snake = ~~~:)
 type Snake struct {
 	Head      Point     `json:"head"`
 	Tail      []Point   `json:"tail"`
 	Direction Direction `json:"direction"`
 	ID        string    `json:"id"`
+}
+
+func NewSnake(sideLength int) Snake {
+	return Snake{
+		ID:        uuid.NewV4().String(),
+		Head:      randomPointIn(sideLength),
+		Tail:      make([]Point, 0),
+		Direction: randomDirection(),
+	}
 }
 
 func (snake Snake) tickedHead() Point {
