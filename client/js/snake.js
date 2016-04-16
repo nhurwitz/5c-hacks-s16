@@ -6,7 +6,7 @@ var keys = {
     87: 'in', // W key
     83: 'out' // S key
 };
-var GRID_WIDTH = 400;
+var GRID_WIDTH = 450;
 var CAMERA_Y = 300;
 var CAMERA_Z = 2000;
 var ANIMATION_TIME = 200;
@@ -17,7 +17,7 @@ var MY_TAIL_COLOR = '#3498DB';
 var MY_HEAD_COLOR = '#FF9A00';
 var OTHER_TAIL_COLOR = '#95A5A6';
 var OTHER_HEAD_COLOR = '#ABB7B7';
-var MARGIN_TOP = 100;
+var MARGIN_TOP = 125;
 var CELL_WIDTH;
 
 var cubeGeo, squareGeo, boundingGrid, myID;
@@ -32,7 +32,7 @@ var camera = new THREE.PerspectiveCamera(25, width / height, 1, 30000);
 var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
-renderer.setClearColor(BACKGROUND_COLOR);
+renderer.setClearColor(BACKGROUND_COLOR,1);
 renderer.setSize(width, height);
 container.appendChild(renderer.domElement);
 
