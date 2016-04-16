@@ -1,6 +1,7 @@
 package server
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"sync"
@@ -17,18 +18,22 @@ var (
 
 	connections = make(map[*websocket.Conn]bool)
 	mu          = new(sync.Mutex)
+
+	rate = flag.Int("rate", 250, "num ms between world ticks")
 )
 
 func init() {
 
 	rand.Seed(time.Now().UnixNano())
 
+	flag.Parse()
+
 	actionChan <- Action{
 		ActionType: ActionSpawn,
 		SnakeID:    uuid.NewV4().String(),
 	}
 
-	ticker := time.NewTicker(250 * time.Millisecond).C
+	ticker := time.NewTicker(time.Duration((*rate)) * time.Millisecond).C
 	go func() {
 		for {
 			var evts []Event
