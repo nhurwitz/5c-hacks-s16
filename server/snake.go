@@ -31,8 +31,20 @@ func (snake Snake) collidedWithOther(other Snake) bool {
 		return true
 	}
 	for _, otherPoint := range other.Tail {
-		return snake.Head.equals(otherPoint)
+		if snake.Head.equals(otherPoint) {
+			return true
+		}
 	}
+	return false
+}
+
+func (snake Snake) containsPoint(p Point) bool {
+	for _, bodyPoint := range append(snake.Tail, snake.Head) {
+		if bodyPoint == p {
+			return true
+		}
+	}
+
 	return false
 }
 

@@ -24,11 +24,21 @@ func (w World) randomPoint() Point {
 		Z: rand.Intn(w.GridLength)}
 }
 
+func (w World) anySnakesContain(p Point) bool {
+	for _, snake := range w.Snakes {
+		if snake.containsPoint(p) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (w World) requeuePoints() World {
+
 	for len(w.PendingPoints) < len(w.Snakes)*PointRatio {
 		newPoint := w.randomPoint()
-		// TODO XXX don't generate points currently in snakes?
-		for w.isPending(newPoint) {
+		for w.isPending(newPoint) || w.anySnakesContain(newPoint) {
 			newPoint = w.randomPoint()
 		}
 		w.PendingPoints = append(w.PendingPoints, newPoint)
