@@ -15,7 +15,7 @@ var (
 	eventChan  = make(chan Event, 10000)
 	actionChan = make(chan Action, 10000)
 
-	connections map[*websocket.Conn]bool
+	connections = make(map[*websocket.Conn]bool)
 	mu          = new(sync.Mutex)
 )
 

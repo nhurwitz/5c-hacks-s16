@@ -123,6 +123,12 @@ func Tick(w World) (World, []Event) {
 	// Remove dead snakes
 	for snakeID := range deadSnakeIDs {
 		delete(livingMovedSnakes, snakeID)
+
+		// XXX remove this
+		actionChan <- Action{
+			ActionType: ActionSpawn,
+			SnakeID:    snakeID,
+		}
 	}
 
 	// Track events - who died?
