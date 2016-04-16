@@ -2,10 +2,12 @@ package server
 
 import (
 	"fmt"
+	"math/rand"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/satori/go.uuid"
 )
 
 var (
@@ -18,6 +20,13 @@ var (
 )
 
 func init() {
+
+	rand.Seed(time.Now().UnixNano())
+
+	actionChan <- Action{
+		ActionType: ActionSpawn,
+		SnakeID:    uuid.NewV4().String(),
+	}
 
 	ticker := time.NewTicker(250 * time.Millisecond).C
 	go func() {

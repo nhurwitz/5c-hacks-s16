@@ -33,6 +33,20 @@ func (w World) anySnakesContain(p Point) bool {
 	return false
 }
 
+func (w World) pointInUse(p Point) bool {
+	if w.anySnakesContain(p) {
+		return true
+	}
+
+	for _, pending := range w.PendingPoints {
+		if pending == p {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (w World) requeuePoints() World {
 
 	for len(w.PendingPoints) < len(w.Snakes)*PointRatio {
@@ -148,19 +162,14 @@ func Act(w World, a Action) (World, []Event) {
 		// Makes sure new head contained within another snake / a pending point
 	validationLoop:
 		for {
-			for _, snake := range w.Snakes {
-				for i := range w.PendingPoints {
-					if !(snake.containsPoint(newSnake.Head) ||
-						w.PendingPoints[i].equals(newSnake.Head)) {
-						break validationLoop
-					}
-					newSnake.Head = randomPointIn(w.SideLength)
-					continue validationLoop
-				}
+			if w.pointInUse(newSnake.Head) {
+				newSnake.Head = randomPointIn(w.SideLength)
+				continue validationLoop
 			}
+
+			break
 		}
 
-		newSnake.Direction = *a.Direction
 		w.Snakes[newSnake.ID] = newSnake
 		eventArr := []Event{Event{
 			EventType: EventSpawn,
