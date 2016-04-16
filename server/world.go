@@ -5,16 +5,16 @@ import "math/rand"
 const POINT_RATIO = 1
 
 type World struct {
-	gridLength      int
-	availablePoints []Point
-	snakes          []Snake
+	gridLength    int
+	pendingPoints []Point
+	snakes        []Snake
 }
 
 func newWorld(gridLength int) World {
 	return World{
-		gridLength:      gridLength,
-		availablePoints: make([]Point, 0),
-		snakes:          make([]Snake, 0)}
+		gridLength:    gridLength,
+		pendingPoints: make([]Point, 0),
+		snakes:        make([]Snake, 0)}
 }
 
 func (w World) randomPoint() Point {
@@ -25,17 +25,18 @@ func (w World) randomPoint() Point {
 }
 
 func (w World) requeuePoints() {
-	for len(w.availablePoints) < len(w.snakes)*POINT_RATIO {
+	for len(w.pendingPoints) < len(w.snakes)*POINT_RATIO {
 		newPoint := w.randomPoint()
+		// TODO XXX don't generate points currently in snakes?
 		for w.pointContains(newPoint) {
 			newPoint = w.randomPoint()
 		}
-		w.availablePoints = append(w.availablePoints, newPoint)
+		w.pendingPoints = append(w.pendingPoints, newPoint)
 	}
 }
 
 func (w World) pointContains(p Point) bool {
-	for _, point := range w.availablePoints {
+	for _, point := range w.pendingPoints {
 		if p.equals(point) {
 			return true
 		}
