@@ -10,7 +10,7 @@ type Point struct {
 // Direction = The way the snake is heading
 type Direction string
 
-// 6 Directions
+// 6 Directions (6 god s/o Drake)
 const (
 	NORTH Direction = "North"
 	EAST  Direction = "East"
