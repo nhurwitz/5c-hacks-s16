@@ -17,7 +17,7 @@ var upgrader = websocket.Upgrader{
 func StartServer() {
 	r := mux.NewRouter()
 	r.HandleFunc("/ws", SocketHandler)
-	r.HandleFunc("/", EchoHandler)
+	r.HandleFunc("/test", EchoHandler)
 	fmt.Println("Listening on port 8000")
 	http.ListenAndServe(":8000", r)
 }

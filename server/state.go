@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"sync"
 	"time"
 
@@ -9,8 +10,8 @@ import (
 
 var (
 	world      = newWorld(20)
-	eventChan  = make(chan Event)
-	actionChan = make(chan Action)
+	eventChan  = make(chan Event, 10000)
+	actionChan = make(chan Action, 10000)
 
 	connections map[*websocket.Conn]bool
 	mu          = new(sync.Mutex)
@@ -18,24 +19,27 @@ var (
 
 func init() {
 
-	timer := time.NewTimer(250 * time.Millisecond).C
+	ticker := time.NewTicker(250 * time.Millisecond).C
 	go func() {
 		for {
 			var evts []Event
 			select {
-			case <-timer: // world changes
+			case <-ticker: // world changes
 				world, evts = Tick(world)
 				eventChan <- Event{
 					EventType: EventWorld,
 					World:     world,
 				}
+				fmt.Println(world)
 			case a := <-actionChan: // update the world in response to an action
 				world, evts = Act(world, a)
 			case e := <-eventChan:
 				mu.Lock()
 				for conn := range connections {
 					// ignore the error because it's 1:17 and we on this thang
-					conn.WriteJSON(e)
+					if err := conn.WriteJSON(e); err != nil {
+						fmt.Println("error writing to global connection:", err)
+					}
 				}
 				mu.Unlock()
 			}
