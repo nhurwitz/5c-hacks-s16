@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	world      = newWorld(20)
+	//world      = newWorld(20)
+	world      = newWorld(10)
 	eventChan  = make(chan Event, 10000)
 	actionChan = make(chan Action, 10000)
 
