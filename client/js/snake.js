@@ -43,7 +43,7 @@ var directionalLight = new THREE.DirectionalLight(LIGHT_COLOR);
 directionalLight.position.set(3 * GRID_WIDTH, 2 * CAMERA_Y, CAMERA_Z).normalize();
 scene.add(directionalLight);
 
-camera.position.set(GRID_WIDTH / 2, CAMERA_Y, CAMERA_Z);
+camera.position.set(1000, 500, 1000);
 camera.lookAt(new THREE.Vector3());
 plane = 'xy';
 
@@ -72,6 +72,8 @@ function processResponse(response) {
     squareShape.lineTo(0, 0);
     squareGeo = new THREE.ShapeGeometry(squareShape);
 
+    circleGeo = new THREE.CircleGeometry(CELL_WIDTH / 2);
+
     boundingGrid = new THREE.Object3D();
 
     var gridXY = createAGrid();
@@ -92,12 +94,11 @@ function processResponse(response) {
     for (var key in response["snakes"]) {
         snake = response["snakes"][key];
         if (snake["id"] == myID) {
-          tailColor = MY_TAIL_COLOR;
-          headColor = MY_HEAD_COLOR;
-        }
-        else {
-          tailColor = OTHER_TAIL_COLOR;
-          headColor = OTHER_HEAD_COLOR;
+            tailColor = MY_TAIL_COLOR;
+            headColor = MY_HEAD_COLOR;
+        } else {
+            tailColor = OTHER_TAIL_COLOR;
+            headColor = OTHER_HEAD_COLOR;
         }
         addHead(snake["head"], headColor);
         addTail(snake["tail"], tailColor);
@@ -140,6 +141,50 @@ function addFood(food, color) {
             CELL_WIDTH / 2 + position.y * CELL_WIDTH,
             CELL_WIDTH / 2 + position.z * CELL_WIDTH);
         boundingGrid.add(sphere);
+
+        var circleXY = new THREE.Mesh(circleGeo, new THREE.MeshLambertMaterial({
+            color: color,
+        }));
+        circleXY.position.set(CELL_WIDTH / 2 + position.x * CELL_WIDTH,
+            CELL_WIDTH / 2 + position.y * CELL_WIDTH,
+            0);
+        boundingGrid.add(circleXY);
+
+        var circleXZ = new THREE.Mesh(circleGeo, new THREE.MeshLambertMaterial({
+            color: color,
+        }));
+        circleXZ.position.set(CELL_WIDTH / 2 + position.x * CELL_WIDTH,
+            0,
+            CELL_WIDTH / 2 + position.z * CELL_WIDTH);
+        circleXZ.rotation.x = -Math.PI / 2;
+        boundingGrid.add(circleXZ);
+
+        var circleYZ = new THREE.Mesh(circleGeo, new THREE.MeshLambertMaterial({
+            color: color,
+        }));
+        circleYZ.position.set(0,
+            CELL_WIDTH / 2 + position.y * CELL_WIDTH,
+            CELL_WIDTH / 2 + position.z * CELL_WIDTH);
+        circleYZ.rotation.y = Math.PI / 2;
+        boundingGrid.add(circleYZ);
+        //
+        // var squareXZ = new THREE.Mesh(squareGeo, new THREE.MeshLambertMaterial({
+        //     color: color
+        // }));
+        // squareXZ.position.set(position.x * CELL_WIDTH,
+        //     0,
+        //     (position.z + 1) * CELL_WIDTH);
+        // squareXZ.rotation.x = -Math.PI / 2;
+        // boundingGrid.add(squareXZ);
+        //
+        // var squareYZ = new THREE.Mesh(squareGeo, new THREE.MeshLambertMaterial({
+        //     color: color
+        // }));
+        // squareYZ.position.set(0,
+        //     position.y * CELL_WIDTH,
+        //     (position.z + 1) * CELL_WIDTH);
+        // squareYZ.rotation.y = Math.PI / 2;
+        // boundingGrid.add(squareYZ);
     })
 }
 
