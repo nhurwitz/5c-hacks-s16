@@ -1,9 +1,7 @@
 package server
 
-import (
 // "github.com/satori/go.uuid"
 // "math/rand"
-)
 
 const PointRatio = 1
 
@@ -17,7 +15,8 @@ func newWorld(gridLength int) World {
 	return World{
 		SideLength:    gridLength,
 		PendingPoints: make([]Point, 0),
-		Snakes:        make(map[string]Snake)}
+		Snakes:        make(map[string]Snake),
+	}
 }
 
 func (w World) randomPoint() Point {
@@ -27,6 +26,20 @@ func (w World) randomPoint() Point {
 func (w World) anySnakesContain(p Point) bool {
 	for _, snake := range w.Snakes {
 		if snake.containsPoint(p) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (w World) pointInUse(p Point) bool {
+	if w.anySnakesContain(p) {
+		return true
+	}
+
+	for _, pending := range w.PendingPoints {
+		if pending == p {
 			return true
 		}
 	}
@@ -110,6 +123,12 @@ func Tick(w World) (World, []Event) {
 	// Remove dead snakes
 	for snakeID := range deadSnakeIDs {
 		delete(livingMovedSnakes, snakeID)
+
+		// XXX remove this
+		actionChan <- Action{
+			ActionType: ActionSpawn,
+			SnakeID:    snakeID,
+		}
 	}
 
 	// Track events - who died?
@@ -142,34 +161,39 @@ func Act(w World, a Action) (World, []Event) {
 		w.Snakes[a.SnakeID] = temp
 		return w, nil
 
-	// New snake spawned
 	case ActionSpawn:
 		newSnake := NewSnake(w.SideLength)
+		newSnake.ID = a.SnakeID // we need it to be the same player
 
 		// Makes sure new head contained within another snake / a pending point
 	validationLoop:
 		for {
-			for _, snake := range w.Snakes {
-				for i := range w.PendingPoints {
-					if !(snake.containsPoint(newSnake.Head) ||
-						w.PendingPoints[i].equals(newSnake.Head)) {
-						break validationLoop
-					}
-					newSnake.Head = randomPointIn(w.SideLength)
-					continue validationLoop
-				}
+			if w.pointInUse(newSnake.Head) {
+				newSnake.Head = randomPointIn(w.SideLength)
+				continue validationLoop
 			}
+
+			break
 		}
 
-		newSnake.Direction = *a.Direction
 		w.Snakes[newSnake.ID] = newSnake
 		eventArr := []Event{Event{
 			EventType: EventSpawn,
 			SnakeID:   &newSnake.ID,
-			World:     &w,
 		}}
 
 		return w, eventArr
+
+	case ActionQuit:
+		delete(w.Snakes, a.SnakeID)
+		w.PendingPoints = w.PendingPoints[1:]
+		return w, []Event{{
+			EventType: EventLeave,
+			SnakeID:   &a.SnakeID,
+		}}
+
+	default:
+		panic("invalid action enum")
 	}
 
 	return w, nil

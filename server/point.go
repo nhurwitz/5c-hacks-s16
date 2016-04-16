@@ -4,9 +4,9 @@ import "math/rand"
 
 // Point = X Y Z coord
 type Point struct {
-	X int
-	Y int
-	Z int
+	X int `json:"x"`
+	Y int `json:"y"`
+	Z int `json:"z"`
 }
 
 // Direction = The way the snake is heading

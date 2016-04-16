@@ -6,7 +6,7 @@ var keys = {
     87: 'in', // W key
     83: 'out' // S key
 };
-var GRID_WIDTH = 400;
+var GRID_WIDTH = 450;
 var CAMERA_Y = 300;
 var CAMERA_Z = 2000;
 var ANIMATION_TIME = 200;
@@ -18,7 +18,7 @@ var MY_HEAD_COLOR = '#FF9A00';
 var OTHER_TAIL_COLOR = '#95A5A6';
 var OTHER_HEAD_COLOR = '#ABB7B7';
 var FOOD_COLOR = 'red'
-var MARGIN_TOP = 100;
+var MARGIN_TOP = 125;
 var CELL_WIDTH;
 
 var cubeGeo, sphereGeo, squareGeo, boundingGrid, myID;
@@ -33,7 +33,7 @@ var camera = new THREE.PerspectiveCamera(25, width / height, 1, 30000);
 var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
-renderer.setClearColor(BACKGROUND_COLOR);
+renderer.setClearColor(BACKGROUND_COLOR,1);
 renderer.setSize(width, height);
 container.appendChild(renderer.domElement);
 
@@ -46,56 +46,6 @@ camera.lookAt(new THREE.Vector3());
 plane = 'xy';
 
 myID = 'abc123thisIsAnID';
-response = {
-    "sideLength": 10,
-    "pendingPoints": [{
-        "x": 7,
-        "y": 5,
-        "z": 3
-    }, {
-        "x": 2,
-        "y": 2,
-        "z": 2
-    }],
-    "snakes": {
-        "abc123thisIsAnID": {
-            "id": "abc123thisIsAnID",
-            "head": {
-                "x": 8,
-                "y": 8,
-                "z": 7
-            },
-            "tail": [{
-                "x": 8,
-                "y": 7,
-                "z": 7
-            }, {
-                "x": 8,
-                "y": 6,
-                "z": 7
-            }],
-            "direction": "down"
-        },
-        "abc124thisIsAnID": {
-            "id": "abc123thisIdsAnID",
-            "head": {
-                "x": 2,
-                "y": 2,
-                "z": 1
-            },
-            "tail": [{
-                "x": 2,
-                "y": 3,
-                "z": 1
-            }, {
-                "x": 2,
-                "y": 3,
-                "z": 2
-            }],
-            "direction": "down"
-        }
-    }
-}
 
 document.addEventListener('keydown', function(e) {
     if (keys[e.keyCode] == 'in' || keys[e.keyCode] == 'out') {
@@ -106,9 +56,14 @@ document.addEventListener('keydown', function(e) {
 
 animate();
 
-processResponse(response);
+//processResponse(response);
 
 function processResponse(response) {
+    for (var i = scene.children.length - 1; i >= 0; i--) {
+      obj = scene.children[i];
+      scene.remove(obj);
+    }
+
     CELL_WIDTH = GRID_WIDTH / response["sideLength"];
 
     cubeGeo = new THREE.BoxGeometry(CELL_WIDTH, CELL_WIDTH, CELL_WIDTH);
@@ -216,7 +171,7 @@ function addHead(position, color) {
     boundingGrid.add(cube);
 
     var squareXY = new THREE.Mesh(squareGeo, new THREE.MeshLambertMaterial({
-        color: color
+        color: color,
     }));
     squareXY.position.set(position.x * CELL_WIDTH,
         position.y * CELL_WIDTH,
