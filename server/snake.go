@@ -35,7 +35,7 @@ func (snake Snake) collidedWithOther(other Snake) bool {
 // Add head to the tail, remove the end of the tail
 func (snake Snake) move(capturing bool) Snake {
 	if !capturing {
-
+		snake.tail = append([]Point{snake.head}, snake.tail...)
 	}
 	return snake
 }
