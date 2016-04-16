@@ -17,17 +17,17 @@ func (snake Snake) collidedWithEdge(sideLength int) bool {
 
 func (snake Snake) collidedWithSelf() bool {
 	for _, el := range snake.tail {
-		return equals(snake.head, el)
+		return snake.head.equals(el)
 	}
 	return false
 }
 
 func (snake Snake) collidedWithOther(other Snake) bool {
-	if equals(snake.head, other.head) {
+	if snake.head.equals(other.head) {
 		return true
 	}
 	for _, otherPoint := range other.tail {
-		return equals(snake.head, otherPoint)
+		return snake.head.equals(otherPoint)
 	}
 	return false
 }
