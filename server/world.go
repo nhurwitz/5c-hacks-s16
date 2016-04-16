@@ -155,6 +155,13 @@ func Act(w World, a Action) (World, []Event) {
 	switch a.ActionType {
 
 	case ActionChangeDirection:
+
+		// Trying to move the opposite of your current direction should do nothing
+		// unless you have no tail.
+		if s := w.Snakes[a.SnakeID]; opposite(*a.Direction) == s.Direction && len(s.Tail) > 0 {
+			return w, nil
+		}
+
 		var temp Snake
 		temp = w.Snakes[a.SnakeID]
 		temp.Direction = *a.Direction
