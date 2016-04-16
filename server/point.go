@@ -1,6 +1,7 @@
 package server
 
-type point struct {
+// Point = X Y Z coord
+type Point struct {
 	x int
 	y int
 	z int
@@ -19,7 +20,7 @@ const (
 	DOWN  Direction = "Down"
 )
 
-func move(p point, d Direction) {
+func move(p Point, d Direction) {
 	switch d {
 	case NORTH:
 		p.y++
