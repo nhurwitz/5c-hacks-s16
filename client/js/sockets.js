@@ -11,7 +11,7 @@ exampleSocket.onmessage = function(event) {
         case 'Spawn':
             return;
         case 'Die':
-            // nothing here
+            die();
             return;
         case 'World':
             processResponse(serverEvent.world);
@@ -36,6 +36,16 @@ document.addEventListener('keydown', function(e) {
             direction: keys[e.keyCode]
         };
         exampleSocket.send(JSON.stringify(msg));
-
+    }
+    if (dead) {
+        if (e.keyCode == RESPAWN_CODE) {
+          console.log('sad');
+            var msg = {
+                actionType: "Spawn",
+                snakeID: myID,
+            };
+            exampleSocket.send(JSON.stringify(msg));
+            dead = false;
+        }
     }
 }, false);
