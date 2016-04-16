@@ -1,5 +1,7 @@
 package server
 
+import "math/rand"
+
 // Point = X Y Z coord
 type Point struct {
 	X int
@@ -12,27 +14,27 @@ type Direction string
 
 // 6 Directions (6 god s/o Drake)
 const (
-	NORTH Direction = "North"
-	EAST  Direction = "East"
-	SOUTH Direction = "South"
-	WEST  Direction = "West"
-	UP    Direction = "Up"
-	DOWN  Direction = "Down"
+	North Direction = "North"
+	East  Direction = "East"
+	South Direction = "South"
+	West  Direction = "West"
+	Up    Direction = "Up"
+	Down  Direction = "Down"
 )
 
 func move(p Point, d Direction) Point {
 	switch d {
-	case NORTH:
+	case North:
 		return Point{p.X, p.Y + 1, p.Z}
-	case EAST:
+	case East:
 		return Point{p.X + 1, p.Y, p.Z}
-	case SOUTH:
+	case South:
 		return Point{p.X, p.Y - 1, p.Z}
-	case WEST:
+	case West:
 		return Point{p.X - 1, p.Y, p.Z}
-	case UP:
+	case Up:
 		return Point{p.X, p.Y, p.Z + 1}
-	case DOWN:
+	case Down:
 		return Point{p.X, p.Y, p.Z - 1}
 	}
 	panic("Invalid direction")
@@ -41,4 +43,17 @@ func move(p Point, d Direction) Point {
 func (p Point) equals(other Point) bool {
 	return (p.X == other.X) && (p.Y == other.Y) &&
 		(p.Z == other.Z)
+}
+
+func randomPointIn(sideLength int) Point {
+	return Point{
+		X: rand.Intn(sideLength),
+		Y: rand.Intn(sideLength),
+		Z: rand.Intn(sideLength),
+	}
+}
+
+func randomDirection() Direction {
+	directions := []Direction{North, East, South, West, Down, Up}
+	return directions[rand.Intn(len(directions))]
 }
