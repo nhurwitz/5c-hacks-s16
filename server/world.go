@@ -81,7 +81,6 @@ func Tick(w World) (World, []Event) {
 
 	// Which snakes are capturing? If a snake ID is present, the snake is
 	// capturing.
-	// XXX TODO remove pending points
 	snakesWhichAreCapturing := make(map[string]bool)
 	for snakeID, newHead := range tickedHeads {
 		if pending, i := w.isPending(newHead); pending {
@@ -123,12 +122,6 @@ func Tick(w World) (World, []Event) {
 	// Remove dead snakes
 	for snakeID := range deadSnakeIDs {
 		delete(livingMovedSnakes, snakeID)
-
-		// XXX remove this
-		actionChan <- Action{
-			ActionType: ActionSpawn,
-			SnakeID:    snakeID,
-		}
 	}
 
 	// Track events - who died?

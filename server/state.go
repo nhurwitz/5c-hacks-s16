@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/satori/go.uuid"
 )
 
 var (
@@ -28,10 +27,10 @@ func init() {
 
 	flag.Parse()
 
-	actionChan <- Action{
-		ActionType: ActionSpawn,
-		SnakeID:    uuid.NewV4().String(),
-	}
+	//actionChan <- Action{
+	//ActionType: ActionSpawn,
+	//SnakeID:    uuid.NewV4().String(),
+	//}
 
 	ticker := time.NewTicker(time.Duration((*rate)) * time.Millisecond).C
 	go func() {
