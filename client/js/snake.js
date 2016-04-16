@@ -17,10 +17,11 @@ var MY_TAIL_COLOR = '#3498DB';
 var MY_HEAD_COLOR = '#FF9A00';
 var OTHER_TAIL_COLOR = '#95A5A6';
 var OTHER_HEAD_COLOR = '#ABB7B7';
+var FOOD_COLOR = 'red'
 var MARGIN_TOP = 100;
 var CELL_WIDTH;
 
-var cubeGeo, squareGeo, boundingGrid, myID;
+var cubeGeo, sphereGeo, squareGeo, boundingGrid, myID;
 
 var container = document.getElementById('container');
 var width = container.clientWidth;
@@ -111,6 +112,7 @@ function processResponse(response) {
     CELL_WIDTH = GRID_WIDTH / response["sideLength"];
 
     cubeGeo = new THREE.BoxGeometry(CELL_WIDTH, CELL_WIDTH, CELL_WIDTH);
+    sphereGeo = new THREE.SphereGeometry(CELL_WIDTH / 2);
 
     var squareShape = new THREE.Shape();
     squareShape.moveTo(0, 0);
@@ -149,6 +151,7 @@ function processResponse(response) {
         }
         addHead(snake["head"], headColor);
         addTail(snake["tail"], tailColor);
+        addFood(response["pendingPoints"], FOOD_COLOR);
     }
 }
 
@@ -174,6 +177,19 @@ function camYZ() {
 
 function onCamUpdate() {
     camera.lookAt(new THREE.Vector3(0, 0, 0));
+}
+
+function addFood(food, color) {
+    var sphereMaterial = new THREE.MeshLambertMaterial({
+        color: color
+    });
+    food.forEach(function(position) {
+        var sphere = new THREE.Mesh(sphereGeo, sphereMaterial);
+        sphere.position.set(CELL_WIDTH / 2 + position.x * CELL_WIDTH,
+            CELL_WIDTH / 2 + position.y * CELL_WIDTH,
+            CELL_WIDTH / 2 + position.z * CELL_WIDTH);
+        boundingGrid.add(sphere);
+    })
 }
 
 function addTail(tail, color) {
