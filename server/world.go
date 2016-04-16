@@ -10,6 +10,13 @@ type World struct {
 	snakes          []Snake
 }
 
+func newWorld(gridLength int) World {
+	return World{
+		gridLength:      gridLength,
+		availablePoints: make([]Point, 0),
+		snakes:          make([]Snake, 0)}
+}
+
 func (w World) randomPoint() Point {
 	return Point{
 		x: rand.Intn(w.gridLength),
