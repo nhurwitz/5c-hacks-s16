@@ -8,7 +8,7 @@ var keys = {
 };
 var CAMERA_KEY_CODE = 32;
 
-var GRID_WIDTH = 370;
+var GRID_WIDTH = 350;
 var CAMERA_Y = 300;
 var CAMERA_Z = 2000;
 var ANIMATION_TIME = 200;
@@ -40,8 +40,9 @@ var camera = new THREE.PerspectiveCamera(25, width / height, 1, 30000);
 
 var renderer = new THREE.WebGLRenderer({
     antialias: true,
+    alpha: true,
 });
-renderer.setClearColor(BACKGROUND_COLOR);
+renderer.setClearColor( 0x000000, 0);
 renderer.setSize(width, height);
 container.appendChild(renderer.domElement);
 
