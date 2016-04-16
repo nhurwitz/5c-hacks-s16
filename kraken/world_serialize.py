@@ -41,7 +41,7 @@ def objective_function(new_state, old_state, id):
         return 500
     if len(new_state['snakes'][my_snake_id]['tail']) > len(old_state['snakes'][my_snake_id]['tail']):
         reward += 10
-    head = new_state['snakes'][my_snake_id]['head']                                                         
+    head = new_state['snakes'][my_snake_id]['head']
     minDistance = 500
     for pendingPoint in new_state['pendingPoints']:
         minDistance = min(minDistance, manhattan_distance(head,pendingPoint))
@@ -69,6 +69,3 @@ def objective_function(new_state, old_state, id):
 
 
 # In[ ]:
-
-
-

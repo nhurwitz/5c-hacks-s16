@@ -1,53 +1,145 @@
 body {
-    margin: 0;
-    font-family: 'courier';
-    color: #fff;
-    font-size: 24px;
-    letter-spacing: 5px;
+  margin: 0;
+  font-family: 'courier';
+  color: #fff;
+  font-size: 36px;
+  letter-spacing: 5px;
+  background: #4B79A1;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #4B79A1, #283E51);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #4B79A1, #283E51);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.land {
+  background: #a80077;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #a80077, #66ff00);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #a80077, #66ff00);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 img {
-    width: 70px;
-    height: 70px;
+  width: 100px;
+  height: 100px;
+}
+.flipped {
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
 }
 #container {
-    height: 70vh;
-    width: 60vw;
-    float: none;
-    margin: 0 auto;
+  height: 100vh;
+  width: 100vw;
 }
 .jumbotron {
-    background: #DE6262;
-    /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #DE6262, #FFB88C);
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #DE6262, #FFB88C);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    s
+  background: transparent;
+  padding: 0;
+  margin-bottom: 0;
 }
 .centered {
-    text-align: center;
+  text-align: center;
 }
-.jumbotron.vertical-center {
-    margin-bottom: 0;
+a {
+  animation-duration: 1500ms;
+  animation-name: tgle;
+  animation-iteration-count: infinite;
+  color: white;
+  text-decoration: underline;
 }
+.rainbow {
+  background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2), color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22));
+  background-image: gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2), color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22));
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+a:hover {
+  color: white;
+}
+@keyframes tgle {
+  0% {
+    opacity: 0;
+  }
+  49.99% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  99.99% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.marquee {
+  padding-top: 100px;
+ height: 50px;
+ position: relative;
+}
+.marquee h3 {
+  font-size: 20px;
+ position: absolute;
+ width: 100%;
+ height: 100%;
+ margin: 0;
+ line-height: 50px;
+ text-align: center;
+ /* Starting position */
+ -moz-transform:translateX(100%);
+ -webkit-transform:translateX(100%);
+ transform:translateX(100%);
+ /* Apply animation to this element */
+ -moz-animation: marquee 15s linear infinite;
+ -webkit-animation: marquee 15s linear infinite;
+ animation: marquee 15s linear infinite;
+}
+/* Move it (define the animation) */
+@-moz-keyframes marquee {
+ 0%   { -moz-transform: translateX(100%); }
+ 100% { -moz-transform: translateX(-100%); }
+}
+@-webkit-keyframes marquee {
+ 0%   { -webkit-transform: translateX(100%); }
+ 100% { -webkit-transform: translateX(-100%); }
+}
+@keyframes marquee {
+ 0%   {
+ -moz-transform: translateX(100%); /* Firefox bug fix */
+ -webkit-transform: translateX(100%); /* Firefox bug fix */
+ transform: translateX(100%);
+ }
+ 100% {
+ -moz-transform: translateX(-100%); /* Firefox bug fix */
+ -webkit-transform: translateX(-100%); /* Firefox bug fix */
+ transform: translateX(-100%);
+ }
+}
+
 .vertical-center {
-    min-height: 80%;
-    min-height: 80vh;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    /* Align the bootstrap's container vertically */
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -moz-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    width: 100%;
-    -webkit-box-pack: center;
-    -moz-box-pack: center;
-    -ms-flex-pack: center;
-    -webkit-justify-content: center;
-    justify-content: center;
+  min-height: 100%;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  /* Align the bootstrap's container vertically */
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
 }

@@ -38,7 +38,7 @@ def intToDirection(d):
         1: 'East',
         2: 'South',
         3: 'West',
-        4: 'Up',    
+        4: 'Up',
         5: 'Down',
     }[d]
 
@@ -64,14 +64,14 @@ def objective_function(new_state, old_state, snake_id):
             return -500
     except:
         return -500
-   
+
     try:
         if len(new_state['snakes'][snake_id]['tail']) > len(old_state['snakes'][snake_id]['tail']):
             reward += 10
     except:
         pass
 
-    head = new_state['snakes'][snake_id]['head']                                                         
+    head = new_state['snakes'][snake_id]['head']
     minDistance = 500
     for pendingPoint in new_state['pendingPoints']:
         minDistance = min(minDistance, manhattan_distance(head,pendingPoint))
