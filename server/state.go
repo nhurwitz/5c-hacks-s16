@@ -2,8 +2,6 @@ package server
 
 import "time"
 
-// This file contains global state - and World, protected by a mutex.
-
 var (
 	w          = newWorld(20)
 	eventChan  = make(chan Event)
@@ -17,9 +15,13 @@ func init() {
 		for {
 			var evts []Event
 			select {
-			case <-timer:
+			case <-timer: // world changes
 				w, evts = Tick(w)
-			case a := <-actionChan:
+				eventChan <- Event{
+					EventType: EventWorld,
+					World:     w,
+				}
+			case a := <-actionChan: // update the world in response to an action
 				w, evts = Act(w, a)
 			}
 
