@@ -81,7 +81,6 @@ func Tick(w World) (World, []Event) {
 
 	// Which snakes are capturing? If a snake ID is present, the snake is
 	// capturing.
-	// XXX TODO remove pending points
 	snakesWhichAreCapturing := make(map[string]bool)
 	for snakeID, newHead := range tickedHeads {
 		if pending, i := w.isPending(newHead); pending {
@@ -123,12 +122,6 @@ func Tick(w World) (World, []Event) {
 	// Remove dead snakes
 	for snakeID := range deadSnakeIDs {
 		delete(livingMovedSnakes, snakeID)
-
-		// XXX remove this
-		actionChan <- Action{
-			ActionType: ActionSpawn,
-			SnakeID:    snakeID,
-		}
 	}
 
 	// Track events - who died?
@@ -159,6 +152,10 @@ func Act(w World, a Action) (World, []Event) {
 		// Trying to move the opposite of your current direction should do nothing
 		// unless you have no tail.
 		if s := w.Snakes[a.SnakeID]; opposite(*a.Direction) == s.Direction && len(s.Tail) > 0 {
+			return w, nil
+		}
+
+		if _, ok := w.Snakes[a.SnakeID]; !ok {
 			return w, nil
 		}
 

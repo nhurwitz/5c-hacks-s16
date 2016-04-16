@@ -7,6 +7,7 @@ import timeit
 import json
 from websocket import create_connection
 from enum import Enum
+from concurrent.futures import ThreadPoolExecutor
 
 NUM_INPUT = 3
 GAMMA = 0.9  # Forgetting.
@@ -19,7 +20,7 @@ def intToDirection(d):
         1: 'East',
         2: 'South',
         3: 'West',
-        4: 'Up',    
+        4: 'Up',
         5: 'Down',
     }[d]
 
@@ -45,21 +46,33 @@ def objective_function(new_state, old_state, snake_id):
             return -500
     except:
         return -500
-   
+
     try:
         if len(new_state['snakes'][snake_id]['tail']) > len(old_state['snakes'][snake_id]['tail']):
             reward += 10
     except:
         pass
 
-    head = new_state['snakes'][snake_id]['head']                                                         
+    head = new_state['snakes'][snake_id]['head']
     minDistance = 500
     for pendingPoint in new_state['pendingPoints']:
         minDistance = min(minDistance, manhattan_distance(head,pendingPoint))
     return reward - minDistance
 
-def train_net(model, params):
+def play_net(model, params):
     ws = create_connection("ws://localhost:8000/ws")
+    welcomeJson = ws.recv()
+    welcome = json.loads(welcomeJson)
+    clientId = welcome['snakeID']
+
+    while True:
+      state = ws.recv()
+      qval = model.predict(state, batch_size=1)
+      action = (np.argmax(qval))  # best
+      ws.send(json.dumps({"actionType": "Direction", "snakeID": clientId, "direction": intToDirection(action)}))
+
+def train_net(model, params):
+    ws = create_connection("ws://localhost:8001/ws")
     welcomeJson = ws.recv()
     welcome = json.loads(welcomeJson)
     clientId = welcome['snakeID']
@@ -264,4 +277,11 @@ if __name__ == "__main__":
             "nn": nn_param
         }
         model = neural_net(NUM_INPUT, nn_param)
-        train_net(model, params)
+
+        # Concurrently train and play the model
+        with ThreadPoolExecutor(max_workers=5) as executor:
+          executor.submit(train_net, model, params)
+          executor.submit(train_net, model, params)
+          executor.submit(train_net, model, params)
+          executor.submit(train_net, model, params)
+          executor.submit(play_net, model, params)

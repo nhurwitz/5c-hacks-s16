@@ -1,6 +1,7 @@
 package server
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 
@@ -20,13 +21,16 @@ func StartServer() {
 	r.HandleFunc("/ws", SocketHandler)
 	r.HandleFunc("/test", EchoHandler)
 	fmt.Println("Listening on port 8000")
-	http.ListenAndServe(":8000", r)
+	portString := fmt.Sprintf(":%d", *port)
+	http.ListenAndServe(portString, r)
 }
 
 func EchoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("hello, world!"))
 	w.WriteHeader(200)
 }
+
+var port = flag.Int("port", 8000, "http port")
 
 // start a goroutine which, for every event, pulls that event off and writes it
 // to each connections

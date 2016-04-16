@@ -7,10 +7,11 @@ var keys = {
     83: 'South', // S key
 };
 var CAMERA_KEY_CODE = 32;
+var RESPAWN_CODE = 13;
 
 var GRID_WIDTH = 350;
 var CAMERA_Y = 300;
-var CAMERA_Z = 2000;
+var CAMERA_Z = 1500;
 var ANIMATION_TIME = 200;
 var GRID_COLOR = "#444036";
 var BACKGROUND_COLOR = "#DFEBED";
@@ -28,6 +29,7 @@ var DEFAULT_CAMERA_POS = {
     z: 1000
 }
 var CELL_WIDTH;
+var dead = false;
 
 var cubeGeo, sphereGeo, squareGeo, circleGeo, boundingGrid, myID, contents;
 
@@ -71,6 +73,10 @@ document.addEventListener('keydown', function(e) {
 }, false);
 
 animate();
+
+function die() {
+  dead = true;
+}
 
 function initGrid() {
     cubeGeo = new THREE.BoxGeometry(CELL_WIDTH, CELL_WIDTH, CELL_WIDTH);
@@ -147,7 +153,7 @@ function camYZ() {
     plane = 'yz';
     animation = new TWEEN.Tween(camera.position).to({
         x: CAMERA_Z,
-        y: GRID_WIDTH / 2,
+        y: GRID_WIDTH   ,
         z: CAMERA_Y
     }, ANIMATION_TIME).start();
     animation.onUpdate(onCamUpdate);

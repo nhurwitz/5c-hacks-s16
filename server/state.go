@@ -1,13 +1,13 @@
 package server
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/satori/go.uuid"
 )
 
 var (
@@ -17,18 +17,22 @@ var (
 
 	connections = make(map[*websocket.Conn]bool)
 	mu          = new(sync.Mutex)
+
+	rate = flag.Int("rate", 250, "num ms between world ticks")
 )
 
 func init() {
 
 	rand.Seed(time.Now().UnixNano())
 
-	actionChan <- Action{
-		ActionType: ActionSpawn,
-		SnakeID:    uuid.NewV4().String(),
-	}
+	flag.Parse()
 
-	ticker := time.NewTicker(250 * time.Millisecond).C
+	//actionChan <- Action{
+	//ActionType: ActionSpawn,
+	//SnakeID:    uuid.NewV4().String(),
+	//}
+
+	ticker := time.NewTicker(time.Duration((*rate)) * time.Millisecond).C
 	go func() {
 		for {
 			var evts []Event
