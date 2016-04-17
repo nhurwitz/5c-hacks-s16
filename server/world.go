@@ -190,9 +190,9 @@ func Act(w World, a Action) (World, []Event) {
 
 	case ActionQuit:
 		delete(w.Snakes, a.SnakeID)
-		//if len(w.PendingPoints) > 0 {
-		//w.PendingPoints = w.PendingPoints[1:]
-		//}
+		if len(w.PendingPoints) > 0 {
+			w.PendingPoints = w.PendingPoints[1:]
+		}
 		return w, []Event{{
 			EventType: EventLeave,
 			SnakeID:   &a.SnakeID,
