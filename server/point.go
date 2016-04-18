@@ -42,9 +42,9 @@ func move(p Point, d Direction, sideLength int) Point {
 		return Point{p.X, p.Y - 1, p.Z}
 	case Down:
 		if p.Z == 0 {
-			return Point{p.X, p.Y, p.Z - 1}
+			return Point{p.X, p.Y, sideLength - 1}
 		}
-		return Point{p.X, p.Y, sideLength - 1}
+		return Point{p.X, p.Y, p.Z - 1}
 	}
 	panic("Invalid direction")
 }
