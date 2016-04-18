@@ -22,24 +22,6 @@ const (
 	Down  Direction = "Down"  // 6
 )
 
-func opposite(d Direction) Direction {
-	switch d {
-	case North:
-		return South
-	case East:
-		return West
-	case South:
-		return North
-	case West:
-		return East
-	case Up:
-		return Down
-	case Down:
-		return Up
-	}
-	panic("Invalid direction")
-}
-
 func move(p Point, d Direction) Point {
 	switch d {
 	case North:
@@ -56,11 +38,6 @@ func move(p Point, d Direction) Point {
 		return Point{p.X, p.Y, p.Z - 1}
 	}
 	panic("Invalid direction")
-}
-
-func (p Point) equals(other Point) bool {
-	return (p.X == other.X) && (p.Y == other.Y) &&
-		(p.Z == other.Z)
 }
 
 func randomPointIn(sideLength int) Point {

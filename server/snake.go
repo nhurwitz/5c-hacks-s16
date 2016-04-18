@@ -29,21 +29,26 @@ func (snake Snake) collidedWithEdge(sideLength int) bool {
 }
 
 func (snake Snake) collidedWithSelf() bool {
-	for _, el := range snake.Tail {
-		return snake.Head.equals(el)
+	for _, pt := range snake.Tail {
+		if pt == snake.Head {
+			return true
+		}
 	}
+
 	return false
 }
 
 func (snake Snake) collidedWithOther(other Snake) bool {
-	if snake.Head.equals(other.Head) {
+	if snake.Head == other.Head {
 		return true
 	}
+
 	for _, otherPoint := range other.Tail {
-		if snake.Head.equals(otherPoint) {
+		if snake.Head == otherPoint {
 			return true
 		}
 	}
+
 	return false
 }
 

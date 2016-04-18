@@ -64,7 +64,7 @@ func (w World) requeuePoints() World {
 
 func (w World) isPending(p Point) (bool, int) {
 	for i, point := range w.PendingPoints {
-		if p.equals(point) {
+		if p == point {
 			return true, i
 		}
 	}
@@ -151,8 +151,11 @@ func Act(w World, a Action) (World, []Event) {
 
 		// Trying to move the opposite of your current direction should do nothing
 		// unless you have no tail.
-		if s := w.Snakes[a.SnakeID]; opposite(*a.Direction) == s.Direction && len(s.Tail) > 0 {
-			return w, nil
+		if s, ok := w.Snakes[a.SnakeID]; ok && len(s.Tail) > 0 {
+			s.Direction = *a.Direction
+			if s.tickedHead() == s.Tail[0] {
+				return w, nil
+			}
 		}
 
 		if _, ok := w.Snakes[a.SnakeID]; !ok {
