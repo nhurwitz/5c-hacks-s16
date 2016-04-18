@@ -22,20 +22,29 @@ const (
 	Down  Direction = "Down"  // 6
 )
 
-func move(p Point, d Direction) Point {
+func move(p Point, d Direction, sideLength int) Point {
 	switch d {
 	case North:
-		return Point{p.X, p.Y + 1, p.Z}
+		return Point{p.X, (p.Y + 1) % sideLength, p.Z}
 	case East:
-		return Point{p.X + 1, p.Y, p.Z}
-	case South:
-		return Point{p.X, p.Y - 1, p.Z}
-	case West:
-		return Point{p.X - 1, p.Y, p.Z}
+		return Point{(p.X + 1) % sideLength, p.Y, p.Z}
 	case Up:
-		return Point{p.X, p.Y, p.Z + 1}
+		return Point{p.X, p.Y, (p.Z + 1) % sideLength}
+	case West:
+		if p.X == 0 {
+			return Point{sideLength - 1, p.Y, p.Z}
+		}
+		return Point{p.X - 1, p.Y, p.Z}
+	case South:
+		if p.Y == 0 {
+			return Point{p.X, sideLength - 1, p.Z}
+		}
+		return Point{p.X, p.Y - 1, p.Z}
 	case Down:
-		return Point{p.X, p.Y, p.Z - 1}
+		if p.Z == 0 {
+			return Point{p.X, p.Y, p.Z - 1}
+		}
+		return Point{p.X, p.Y, sideLength - 1}
 	}
 	panic("Invalid direction")
 }

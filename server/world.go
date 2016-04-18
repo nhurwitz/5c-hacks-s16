@@ -76,7 +76,7 @@ func Tick(w World) (World, []Event) {
 	// Tick heads. Map of snake IDs to new head
 	tickedHeads := make(map[string]Point)
 	for _, snake := range w.Snakes {
-		tickedHeads[snake.ID] = snake.tickedHead()
+		tickedHeads[snake.ID] = snake.tickedHead(w.SideLength)
 	}
 
 	// Which snakes are capturing? If a snake ID is present, the snake is
@@ -93,7 +93,10 @@ func Tick(w World) (World, []Event) {
 	// whether or not they're still alive next.
 	livingMovedSnakes := make(map[string]Snake)
 	for _, snake := range w.Snakes {
-		livingMovedSnakes[snake.ID] = snake.move(snakesWhichAreCapturing[snake.ID])
+		livingMovedSnakes[snake.ID] = snake.move(
+			snakesWhichAreCapturing[snake.ID],
+			w.SideLength,
+		)
 	}
 
 	// Collision detection. DO NOT REMOVE FROM THE MAP YET; JUST ASSEMBLE IDs.
@@ -113,10 +116,6 @@ func Tick(w World) (World, []Event) {
 			deadSnakeIDs[snakeID] = true
 		}
 
-		// colliding with edge.
-		if snake.collidedWithEdge(w.SideLength) {
-			deadSnakeIDs[snakeID] = true
-		}
 	}
 
 	// Remove dead snakes
@@ -153,7 +152,7 @@ func Act(w World, a Action) (World, []Event) {
 		// unless you have no tail.
 		if s, ok := w.Snakes[a.SnakeID]; ok && len(s.Tail) > 0 {
 			s.Direction = *a.Direction
-			if s.tickedHead() == s.Tail[0] {
+			if s.tickedHead(w.SideLength) == s.Tail[0] {
 				return w, nil
 			}
 		}

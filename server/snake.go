@@ -17,15 +17,8 @@ func NewSnake(sideLength int) Snake {
 	}
 }
 
-func (snake Snake) tickedHead() Point {
-	return snake.move(false).Head
-}
-
-// 0-indexed grid. (i.e., if sidelength = 4, [3] = edge)
-func (snake Snake) collidedWithEdge(sideLength int) bool {
-	return (snake.Head.X >= sideLength) || (snake.Head.X < 0) ||
-		(snake.Head.Y >= sideLength) || (snake.Head.Y < 0) ||
-		(snake.Head.Z >= sideLength) || (snake.Head.Z < 0)
+func (snake Snake) tickedHead(sideLength int) Point {
+	return snake.move(false, sideLength).Head
 }
 
 func (snake Snake) collidedWithSelf() bool {
@@ -64,8 +57,8 @@ func (snake Snake) containsPoint(p Point) bool {
 
 // Advance snake by adding head to the tail
 // Remove last element if not capturing
-func (snake Snake) move(capturing bool) Snake {
-	var newHead = move(snake.Head, snake.Direction)
+func (snake Snake) move(capturing bool, sideLength int) Snake {
+	var newHead = move(snake.Head, snake.Direction, sideLength)
 	snake.Tail = append([]Point{snake.Head}, snake.Tail...)
 	snake.Head = newHead
 	if !capturing {
